@@ -3,7 +3,7 @@ const express = require('express')
 
 connectToMongoDB();
 const app = express()
-const port = 3000
+const port = 5000
 
 //To use JSON Request Body
 app.use(express.json());
