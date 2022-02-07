@@ -7,7 +7,7 @@ const router = express.Router();
 //ROUTE:1 Get Logged-In User All Notes: GET "api/auth/fetchAllNotes". Login required.
 router.get('/fetchAllNotes', fetchUser, async (req, res) => {
     try {
-        const notes = await Note.find({ user: req.user.id });
+        const notes = await Note.find({ user: req.userData.id });
         res.send(notes);
     } catch (error) {
         console.error(error.message);
@@ -32,7 +32,7 @@ router.post('/addNote', fetchUser, [
 
     try {
         const note = new Note({
-            title, description, tag, user: req.user.id
+            title, description, tag, user: req.userData.id
         })
         const saveNote = await note.save();
         res.send(saveNote);
@@ -57,7 +57,7 @@ router.put('/updateNote/:id', fetchUser, async (req, res) => {
         let note = await Note.findById(req.params.id)
         if (!note) { return res.status(404).send({ error: "Not found" }) };
 
-        if (note.user.toString() !== req.user.id) {
+        if (note.user.toString() !== req.userData.id) {
             return res.status(401).send({ error: "Unauthorized Access" });
         }
         //Update the note
@@ -76,7 +76,7 @@ router.delete('/deleteNote/:id', fetchUser, async (req, res) => {
     let note = await Note.findById(req.params.id)
     if (!note) { return res.status(404).send({ error: "Not found" }) };
 
-    if (note.user.toString() !== req.user.id) {
+    if (note.user.toString() !== req.userData.id) {
         return res.status(401).send({ error: "Unauthorized Access" });
     }
 
